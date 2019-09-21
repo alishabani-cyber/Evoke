@@ -59,17 +59,16 @@ import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.evoke.KEY_EVENT_ACTION
 import com.example.evoke.KEY_EVENT_EXTRA
 import com.example.evoke.MainActivity
 import com.example.evoke.R
-import com.example.evoke.utils.ANIMATION_FAST_MILLIS
-import com.example.evoke.utils.ANIMATION_SLOW_MILLIS
-import com.example.evoke.utils.AutoFitPreviewBuilder
-import com.example.evoke.utils.simulateClick
-import com.example.evoke.utils.QrCodeAnalyzer
+import com.example.evoke.models.ProductModel
+import com.example.evoke.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -89,18 +88,29 @@ typealias LumaListener = (luma: Double) -> Unit
  * - Photo taking
  * - Image analysis
  */
-class CameraFragment : Fragment() {
+class CameraFragment : Fragment(), (String) -> Unit {
+    override fun invoke(p1: String) {
+        Log.d(TAG, "String $p1")
+        val openURL = Intent(android.content.Intent.ACTION_VIEW)
+        openURL.data = Uri.parse("https://www.google.com/")
+        startActivity(openURL)
+
+
+    }
 
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: TextureView
     private lateinit var outputDirectory: File
     private lateinit var broadcastManager: LocalBroadcastManager
 
+    private lateinit var cameraRecyclerAdapter: CameraFragmentRecyclerViewAdapter
+
     private var displayId = -1
     private var lensFacing = CameraX.LensFacing.BACK
     private var preview: Preview? = null
     private var imageCapture: ImageCapture? = null
     private var imageAnalyzer: ImageAnalysis? = null
+    private var toast: Toast? = null;
 
     /** Volume down button receiver used to trigger shutter */
     private val volumeDownReceiver = object : BroadcastReceiver() {
@@ -166,11 +176,26 @@ class CameraFragment : Fragment() {
         displayManager.unregisterDisplayListener(displayListener)
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_camera, container, false)
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val binding = inflater.inflate(R.layout.fragment_camera, container,false)
+
+        val recyclerView: RecyclerView = binding.rootView.findViewById(R.id.recycler_result)
+        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this)
+        recyclerView.adapter = cameraRecyclerAdapter
+        return binding.rootView
+    }
+
+    private fun generateFakeValues(): ArrayList<ProductModel> {
+        val values = ArrayList<ProductModel>()
+        for (i in 0..5) {
+            var value = ProductModel(i, "item$i", "Title$i", i*100, i, "http://94.182.189.118/media/product/image/4027293.jpg")
+            values.add(value)
+        }
+        return values
+    }
 
     private fun setGalleryThumbnail(file: File) {
         // Reference of the view that holds the gallery thumbnail
@@ -335,8 +360,9 @@ class CameraFragment : Fragment() {
         imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
             analyzer =  QrCodeAnalyzer { qrCodes ->
                 qrCodes.forEach {
-                    Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
-                    Toast.makeText(getActivity(), "QR Code detected: ${it.rawValue}.",Toast.LENGTH_SHORT).show()
+//                    Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
+//                    showToast("QR Code detected: ${it.rawValue}.")
+                    cameraRecyclerAdapter.addToDataSet(it.rawValue)
 
                 }
             }
@@ -346,6 +372,8 @@ class CameraFragment : Fragment() {
         CameraX.bindToLifecycle(
                 viewLifecycleOwner, preview, imageCapture, imageAnalyzer)
     }
+
+
 
     /** Method used to re-draw the camera UI controls, called every time configuration changes */
     @SuppressLint("RestrictedApi")
@@ -505,4 +533,13 @@ class CameraFragment : Fragment() {
                 File(baseFolder, SimpleDateFormat(format, Locale.US)
                         .format(System.currentTimeMillis()) + extension)
     }
+
+
+    private fun showToast(message: String) {
+        toast?.cancel()
+        toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT)
+        toast?.show()
+    }
+
+
 }

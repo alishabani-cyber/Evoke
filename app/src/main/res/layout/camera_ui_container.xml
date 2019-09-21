@@ -17,6 +17,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/camera_ui_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -26,40 +27,43 @@
         android:id="@+id/camera_switch_button"
         android:layout_width="@dimen/round_button_medium"
         android:layout_height="@dimen/round_button_medium"
-        android:layout_marginBottom="@dimen/margin_xlarge"
         android:layout_marginLeft="@dimen/margin_small"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/switch_camera_button_alt"
         android:padding="@dimen/spacing_small"
         android:scaleType="fitCenter"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_switch"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="@string/switch_camera_button_alt" />
+        app:srcCompat="@drawable/ic_switch"
+        tools:layout_editor_absoluteY="575dp" />
 
     <ImageButton
         android:id="@+id/camera_capture_button"
         android:layout_width="@dimen/round_button_large"
         android:layout_height="@dimen/round_button_large"
-        android:layout_marginBottom="@dimen/shutter_button_margin"
-        android:scaleType="fitCenter"
         android:background="@drawable/ic_shutter"
+        android:contentDescription="@string/capture_button_alt"
+        android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="@string/capture_button_alt" />
+        tools:layout_editor_absoluteY="559dp" />
 
     <ImageButton
         android:id="@+id/photo_view_button"
         android:layout_width="@dimen/round_button_medium"
         android:layout_height="@dimen/round_button_medium"
-        android:layout_marginBottom="@dimen/margin_xlarge"
         android:layout_marginRight="@dimen/margin_small"
+        android:background="@drawable/ic_outer_circle"
+        android:contentDescription="@string/gallery_button_alt"
         android:padding="@dimen/spacing_large"
         android:scaleType="fitCenter"
-        android:background="@drawable/ic_outer_circle"
-        app:srcCompat="@drawable/ic_photo"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="@string/gallery_button_alt" />
+        app:srcCompat="@drawable/ic_photo"
+        tools:layout_editor_absoluteY="575dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="225dp"
+        tools:layout_editor_absoluteY="695dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
