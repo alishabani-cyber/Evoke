@@ -1,7 +1,6 @@
 package com.example.evoke.fragments
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,12 @@ import com.bumptech.glide.request.RequestOptions
 
 
 
-class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private var values: ArrayList<ProductModel>, val listener: (String) -> Unit) :
+class CameraFragmentRecyclerViewAdapter(
+    private val mContext: Context?,
+    private var values: ArrayList<ProductModel>,
+    val listener: (String) -> Unit,
+    val previewTextView: TextView
+) :
     RecyclerView.Adapter<CameraFragmentRecyclerViewAdapter.ViewHolder>() {
 
 
@@ -104,6 +108,7 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
                 if(!customContains(testModel.item)) {
                     this.values.add(0, testModel)
                     notifyDataSetChanged()
+//                    showpreivew(testModel)
 
                 }
 
@@ -116,6 +121,12 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
 
         VolleyService.requestQueue.add(request)
         VolleyService.requestQueue.start()
+
+
+    }
+
+    private fun showpreivew(product: ProductModel) {
+        previewTextView.text = product.item
 
 
     }
