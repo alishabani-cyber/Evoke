@@ -21,7 +21,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -60,18 +59,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
-import com.android.volley.Response
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.evoke.*
 import com.example.evoke.models.ProductModel
 import com.example.evoke.utils.*
-import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.camera_ui_container.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.io.File
 import java.lang.Exception
 import java.nio.ByteBuffer
@@ -580,7 +574,8 @@ class CameraFragment : Fragment(), (String) -> Unit {
     fun SendImageRequest(imagePath: File) {
         var filePath = imagePath.path
         var bitmap = BitmapFactory.decodeFile(filePath);
-        Send.SendImageRequest(bitmap, context)
+        var st = Send.SendImageRequest(bitmap, context, cameraRecyclerAdapter)
+
     }
 
 }

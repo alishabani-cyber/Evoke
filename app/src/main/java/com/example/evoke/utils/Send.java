@@ -8,7 +8,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.Volley;
-import com.example.evoke.BuildConfig;
+import com.example.evoke.fragments.CameraFragmentRecyclerViewAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,8 +20,9 @@ import java.util.Map;
 public class Send {
     private static final String TAG = Send.class.getSimpleName();
 
-    public static void SendImageRequest(Bitmap imageBitmap, Context context) {
+    public static void SendImageRequest(Bitmap imageBitmap, Context context, CameraFragmentRecyclerViewAdapter cameraRecyclerAdapter) {
         String url = "http://94.182.189.118/api/ai/image/";
+        final String[] guessName = {null};
 
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(
                 Request.Method.POST, url,
@@ -30,12 +31,15 @@ public class Send {
                         JSONObject object = new JSONObject(new String(response.data));
                         Log.d(TAG, "SendImageRequest: Response " + object);
 
-                        String guessName = object.getString("0");
+                        guessName[0] = object.getString("0");
+                        String g = object.getString("0");
+                        cameraRecyclerAdapter.addToDataSet(g);
 
 
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+
                     }
                 },
                 error -> {
