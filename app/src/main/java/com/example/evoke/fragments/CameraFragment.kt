@@ -27,10 +27,7 @@ import android.hardware.Camera
 import android.hardware.display.DisplayManager
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
@@ -69,6 +66,7 @@ import com.example.evoke.MainActivity
 import com.example.evoke.R
 import com.example.evoke.models.ProductModel
 import com.example.evoke.utils.*
+import kotlinx.android.synthetic.main.camera_ui_container.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -92,7 +90,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
     override fun invoke(p1: String) {
         Log.d(TAG, "String $p1")
         val openURL = Intent(android.content.Intent.ACTION_VIEW)
-        openURL.data = Uri.parse("https://www.google.com/")
+        openURL.data = Uri.parse(p1)
         startActivity(openURL)
 
 
@@ -104,6 +102,16 @@ class CameraFragment : Fragment(), (String) -> Unit {
     private lateinit var broadcastManager: LocalBroadcastManager
 
     private lateinit var cameraRecyclerAdapter: CameraFragmentRecyclerViewAdapter
+
+    lateinit var mainHandler: Handler
+
+    private val updateTextTask = object : Runnable {
+        override fun run() {
+            sendImage()
+            mainHandler.postDelayed(this, 4000)
+        }
+    }
+
 
     private var displayId = -1
     private var lensFacing = CameraX.LensFacing.BACK
@@ -166,6 +174,15 @@ class CameraFragment : Fragment(), (String) -> Unit {
                     CameraFragmentDirections.actionCameraToPermissions())
 
         }
+        mainHandler.postDelayed(updateTextTask, 5000)
+
+
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mainHandler.removeCallbacks(updateTextTask)
     }
 
     override fun onDestroyView() {
@@ -185,13 +202,18 @@ class CameraFragment : Fragment(), (String) -> Unit {
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this)
         recyclerView.adapter = cameraRecyclerAdapter
+
+        mainHandler = Handler(Looper.getMainLooper())
+//        mainHandler.post(updateTextTask)
+
         return binding.rootView
     }
 
     private fun generateFakeValues(): ArrayList<ProductModel> {
         val values = ArrayList<ProductModel>()
+        return values
         for (i in 0..5) {
-            var value = ProductModel(i, "item$i", "Title$i", i*100, i, "http://94.182.189.118/media/product/image/4027293.jpg")
+            var value = ProductModel(i, "item$i", "Title$i", "https://google.com/",i*100, i, "http://94.182.189.118/media/product/imageView/4027293.jpg")
             values.add(value)
         }
         return values
@@ -330,12 +352,12 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
         imageCapture = ImageCapture(imageCaptureConfig)
 
-        // Setup image analysis pipeline that computes average pixel luminance in real time
+        // Setup imageView analysis pipeline that computes average pixel luminance in real time
         val analyzerConfig = ImageAnalysisConfig.Builder().apply {
             setLensFacing(lensFacing)
-            // Use a worker thread for image analysis to prevent preview glitches
+            // Use a worker thread for imageView analysis to prevent preview glitches
             setCallbackHandler(Handler(analyzerThread.looper))
-            // In our analysis, we care more about the latest image than analyzing *every* image
+            // In our analysis, we care more about the latest imageView than analyzing *every* imageView
             setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
             // Set initial target rotation, we will have to call this again if rotation changes
             // during the lifecycle of this use case
@@ -346,7 +368,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
 //        imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
 //            analyzer = LuminosityAnalyzer { luma ->
 //                // Values returned from our analyzer are passed to the attached listener
-//                // We log image analysis results here -- you should do something useful instead!
+//                // We log imageView analysis results here -- you should do something useful instead!
 //                val fps = (analyzer as LuminosityAnalyzer).framesPerSecond
 //                Log.d(
 //                    TAG, "Average luminosity: $luma. " +
@@ -389,19 +411,19 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
         // Listener for button used to capture photo
         controls.findViewById<ImageButton>(R.id.camera_capture_button).setOnClickListener {
-            // Get a stable reference of the modifiable image capture use case
+            // Get a stable reference of the modifiable imageView capture use case
             imageCapture?.let { imageCapture ->
 
-                // Create output file to hold the image
+                // Create output file to hold the imageView
                 val photoFile = createFile(outputDirectory, FILENAME, PHOTO_EXTENSION)
 
-                // Setup image capture metadata
+                // Setup imageView capture metadata
                 val metadata = Metadata().apply {
-                    // Mirror image when using the front camera
+                    // Mirror imageView when using the front camera
                     isReversedHorizontal = lensFacing == CameraX.LensFacing.FRONT
                 }
 
-                // Setup image capture listener which is triggered after photo has been taken
+                // Setup imageView capture listener which is triggered after photo has been taken
                 imageCapture.takePicture(photoFile, imageSavedListener, metadata)
 
                 // We can only change the foreground Drawable using API level 23+ API
@@ -445,10 +467,10 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
 
     /**
-     * Our custom image analysis class.
+     * Our custom imageView analysis class.
      *
      * <p>All we need to do is override the function `analyze` with our desired operations. Here,
-     * we compute the average luminosity of the image by looking at the Y plane of the YUV frame.
+     * we compute the average luminosity of the imageView by looking at the Y plane of the YUV frame.
      */
     private class LuminosityAnalyzer(listener: LumaListener? = null) : ImageAnalysis.Analyzer {
         private val frameRateWindow = 8
@@ -464,7 +486,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
         fun onFrameAnalyzed(listener: LumaListener) = listeners.add(listener)
 
         /**
-         * Helper extension function used to extract a byte array from an image plane buffer
+         * Helper extension function used to extract a byte array from an imageView plane buffer
          */
         private fun ByteBuffer.toByteArray(): ByteArray {
             rewind()    // Rewind the buffer to zero
@@ -474,19 +496,19 @@ class CameraFragment : Fragment(), (String) -> Unit {
         }
 
         /**
-         * Analyzes an image to produce a result.
+         * Analyzes an imageView to produce a result.
          *
          * <p>The caller is responsible for ensuring this analysis method can be executed quickly
-         * enough to prevent stalls in the image acquisition pipeline. Otherwise, newly available
+         * enough to prevent stalls in the imageView acquisition pipeline. Otherwise, newly available
          * images will not be acquired and analyzed.
          *
-         * <p>The image passed to this method becomes invalid after this method returns. The caller
-         * should not store external references to this image, as these references will become
+         * <p>The imageView passed to this method becomes invalid after this method returns. The caller
+         * should not store external references to this imageView, as these references will become
          * invalid.
          *
-         * @param image image being analyzed VERY IMPORTANT: do not close the image, it will be
+         * @param image imageView being analyzed VERY IMPORTANT: do not close the imageView, it will be
          * automatically closed after this method returns
-         * @return the image analysis result
+         * @return the imageView analysis result
          */
         override fun analyze(image: ImageProxy, rotationDegrees: Int) {
             // If there are no listeners attached, we don't need to perform analysis
@@ -504,17 +526,17 @@ class CameraFragment : Fragment(), (String) -> Unit {
             if (frameTimestamps.first - lastAnalyzedTimestamp >= TimeUnit.SECONDS.toMillis(1)) {
                 lastAnalyzedTimestamp = frameTimestamps.first
 
-                // Since format in ImageAnalysis is YUV, image.planes[0] contains the luminance
+                // Since format in ImageAnalysis is YUV, imageView.planes[0] contains the luminance
                 //  plane
                 val buffer = image.planes[0].buffer
 
-                // Extract image data from callback object
+                // Extract imageView data from callback object
                 val data = buffer.toByteArray()
 
                 // Convert the data into an array of pixel values ranging 0-255
                 val pixels = data.map { it.toInt() and 0xFF }
 
-                // Compute average luminance for the image
+                // Compute average luminance for the imageView
                 val luma = pixels.average()
 
                 // Call all listeners with new value
@@ -539,6 +561,15 @@ class CameraFragment : Fragment(), (String) -> Unit {
         toast?.cancel()
         toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT)
         toast?.show()
+    }
+
+    private fun sendImage(){
+        Log.d(TAG, "SEND IMAGe")
+        val shutter = container
+            .findViewById<ImageButton>(R.id.camera_capture_button)
+//        shutter.simulateClick()
+        shutter.performClick();
+
     }
 
 

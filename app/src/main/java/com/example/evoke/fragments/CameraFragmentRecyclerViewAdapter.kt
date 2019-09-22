@@ -5,16 +5,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.bumptech.glide.Glide
 import com.example.evoke.R
 import com.example.evoke.models.ProductModel
 import com.example.evoke.utils.VolleyService
 import com.google.gson.Gson
 import org.json.JSONObject
+import com.bumptech.glide.request.RequestOptions
+
+
 
 
 class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private var values: ArrayList<ProductModel>, val listener: (String) -> Unit) :
@@ -26,7 +31,7 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(values[position].title, position, listener)
+        holder.bind(values[position], position, listener)
 //        holder?.textView?.text = values[position]
 
     }
@@ -45,7 +50,7 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
 
 
     fun addToDataSet(newValue: String?) {
-        if(newValue != null && customContains(newValue)) {
+        if(newValue != null && !customContains(newValue)) {
 
             findInAPI(newValue)
         }
@@ -54,16 +59,22 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
 
     class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!){
         var textView: TextView? = null
+        var imageView: ImageView
         init {
             textView = itemView?.findViewById(R.id.item_txt)
-
+            imageView = itemView?.findViewById(R.id.item_image)!!
         }
 
-        fun bind(item: String, pos: Int, listener: (String) -> Unit) = with(itemView) {
-            textView?.text = item
+        fun bind(item: ProductModel, pos: Int, listener: (String) -> Unit) = with(itemView) {
+            textView?.text = item.item
+            val options = RequestOptions()
+                .centerCrop()
+                .placeholder(R.mipmap.ic_launcher_round)
+                .error(R.mipmap.ic_launcher_round)
+            Glide.with(this).load(item.image).apply(options).into(imageView)
 
             itemView.setOnClickListener {
-                listener(item)
+                listener(item.url)
             }
         }
 
@@ -72,16 +83,16 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
     private fun customContains(newValue: String): Boolean {
         for (i in values) {
             if (newValue == i.item) {
-                return false
+                return true
             }
         }
-        return true
+        return false
     }
 
 
     private fun findInAPI(rawValue: String?) {
 
-        val url : String = "http://94.182.189.118/api/product/036000291452"
+        val url : String = "http://94.182.189.118/api/product/$rawValue"
         val request = JsonObjectRequest(
             Request.Method.GET, url, null,
             Response.Listener<JSONObject> { response ->
@@ -89,10 +100,9 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
 
                 var testModel = gson.fromJson(response.toString(), ProductModel::class.java)
 
+//                not add if already in set
                 if(!customContains(testModel.item)) {
-                    Log.d(TAG, "ADD NEW VALUE TO SET")
                     this.values.add(0, testModel)
-                    Log.d(TAG, "Size of value $this.values.size")
                     notifyDataSetChanged()
 
                 }
@@ -100,7 +110,7 @@ class CameraFragmentRecyclerViewAdapter(private val mContext: Context?, private 
 
             },
             Response.ErrorListener { error ->
-                Log.d(TAG, error.message)
+//                Log.d(TAG, error.message)
             })
 
 
