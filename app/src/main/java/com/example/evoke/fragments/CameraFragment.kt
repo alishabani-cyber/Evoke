@@ -41,6 +41,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
@@ -99,6 +100,9 @@ class CameraFragment : Fragment(), (String) -> Unit {
     private lateinit var outputDirectory: File
     private lateinit var broadcastManager: LocalBroadcastManager
     private lateinit var previewTextView: TextView
+    private lateinit var previewImageView: ImageView
+    private lateinit var previewCons: ConstraintLayout
+
 
 
     lateinit var cameraRecyclerAdapter: CameraFragmentRecyclerViewAdapter
@@ -198,10 +202,12 @@ class CameraFragment : Fragment(), (String) -> Unit {
         val binding = inflater.inflate(R.layout.fragment_camera, container,false)
 
         previewTextView = binding.findViewById(R.id.preview_text_view)
+        previewImageView = binding.findViewById(R.id.preview_image_view)
+        previewCons = binding.findViewById(R.id.Cons_gred)
 
         val recyclerView: RecyclerView = binding.rootView.findViewById(R.id.recycler_result)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this, previewTextView)
+        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this, previewTextView, previewImageView, previewCons)
         recyclerView.adapter = cameraRecyclerAdapter
 
         mainHandler = Handler(Looper.getMainLooper())

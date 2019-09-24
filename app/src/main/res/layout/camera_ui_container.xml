@@ -44,8 +44,8 @@
         android:id="@+id/camera_capture_button"
         android:layout_width="@dimen/round_button_large"
         android:layout_height="@dimen/round_button_large"
-        android:layout_marginBottom="172dp"
-        android:background="@drawable/ic_shutter"
+        android:layout_marginBottom="140dp"
+        android:background="@drawable/txt2"
         android:contentDescription="@string/capture_button_alt"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +73,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="225dp"
-        tools:layout_editor_absoluteY="695dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="100dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package com.example.evoke.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -34,6 +35,7 @@ public class Send {
                         guessName[0] = object.getString("0");
                         String g = object.getString("0");
                         cameraRecyclerAdapter.addToDataSet(g);
+                        Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
 
 
 
