@@ -21,6 +21,7 @@
     <color name="icActive">#FFFFFFFF</color>
     <color name="icFocused">#DDFFFFFF</color>
     <color name="icPressed">#AAFFFFFF</color>
-    <color name="preview_c">#009688</color>
+
+    <color name="preview_c">#2F009688</color>
     <color name="preview_start">#6432B4</color>
 </resources>

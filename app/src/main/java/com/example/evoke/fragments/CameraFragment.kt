@@ -219,11 +219,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
     private fun generateFakeValues(): ArrayList<ProductModel> {
         val values = ArrayList<ProductModel>()
         return values
-        for (i in 0..5) {
-            var value = ProductModel(i, "item$i", "Title$i", "https://google.com/",i*100, i, "http://94.182.189.118/media/product/imageView/4027293.jpg")
-            values.add(value)
-        }
-        return values
     }
 
     private fun setGalleryThumbnail(file: File) {
@@ -370,6 +365,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
             setImageReaderMode(ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE)
             // Set initial target rotation, we will have to call this again if rotation changes
             // during the lifecycle of this use case
+            setMaxResolution(Size(500, 500))
             setTargetRotation(viewFinder.display.rotation)
         }.build()
 

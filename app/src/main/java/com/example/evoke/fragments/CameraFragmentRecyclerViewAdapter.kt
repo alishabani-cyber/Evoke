@@ -149,14 +149,6 @@ class CameraFragmentRecyclerViewAdapter(
 
         previewTextView.text = product.item
 
-        Handler().postDelayed(Runnable {
-            previewConsLay.visibility = View.INVISIBLE
-
-
-        }, 3000)
-
-
-
 
     }
 

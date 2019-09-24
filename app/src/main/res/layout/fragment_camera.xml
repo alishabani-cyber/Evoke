@@ -56,7 +56,7 @@
         app:layout_constraintBottom_toTopOf="@+id/recycler_result"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/txt"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintHorizontal_bias="0.82"
         app:layout_constraintStart_toStartOf="@+id/view_finder"
         app:layout_constraintTop_toTopOf="@+id/view_finder"
