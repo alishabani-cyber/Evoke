@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    >
+    android:orientation="vertical"
+    android:paddingStart="8dp"
+    android:paddingTop="4dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="4dp">
 
     <ImageView
         android:id="@+id/item_image"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@mipmap/ic_launcher_round"
         android:layout_gravity="center"
-        />
+        android:src="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:id="@+id/item_txt"
+        android:id="@+id/item_txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="item_num1"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        />
+        android:text="@string/item_num1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_other_title"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/item_num1"/>
 
 
 

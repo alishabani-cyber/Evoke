@@ -28,11 +28,12 @@
         android:id="@+id/view_finder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/recycler_result"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_result"
@@ -50,17 +51,54 @@
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="149dp"
-        android:layout_height="157dp"
         android:id="@+id/Cons_gred"
-        app:layout_constraintBottom_toTopOf="@+id/recycler_result"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="200dp"
+        android:layout_height="202dp"
         android:background="@drawable/txt"
         android:visibility="visible"
-        app:layout_constraintHorizontal_bias="0.82"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_result"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.919"
         app:layout_constraintStart_toStartOf="@+id/view_finder"
         app:layout_constraintTop_toTopOf="@+id/view_finder"
-        app:layout_constraintVertical_bias="0.077">
+        app:layout_constraintVertical_bias="0.038">
+
+
+        <TextView
+            android:id="@+id/starts"
+            android:layout_width="51dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="6dp"
+            android:text="starts"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.144"
+            app:layout_constraintStart_toEndOf="@+id/preview_image_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.129" />
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="17dp"
+            android:background="@drawable/ic_star_black_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/starts"
+            app:layout_constraintEnd_toEndOf="@+id/starts"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/starts"
+            app:layout_constraintTop_toTopOf="@+id/starts"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="51dp"
+            android:layout_height="16dp"
+            android:text="starts"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.144"
+            app:layout_constraintStart_toEndOf="@+id/preview_image_view"
+            app:layout_constraintTop_toBottomOf="@+id/starts"
+            app:layout_constraintVertical_bias="0.061" />
 
         <ImageView
             android:id="@+id/preview_image_view"
@@ -69,16 +107,16 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintHorizontal_bias="0.117"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.333" />
+            app:layout_constraintVertical_bias="0.128" />
 
         <TextView
-            android:id="@+id/preview_text_view"
+            android:id="@+id/preview_text_view_upper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/txt"
             android:gravity="center"
             android:paddingHorizontal="8dp"
@@ -86,9 +124,43 @@
             android:text="this is a mad test"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
-            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/preview_image_view"
             app:layout_constraintTop_toBottomOf="@+id/preview_image_view" />
+
+        <TextView
+            android:id="@+id/preview_text_view_mid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/txt"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="this is a mad test"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.213"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/preview_text_view_upper"
+            app:layout_constraintVertical_bias="0.206" />
+
+        <TextView
+            android:id="@+id/preview_text_view_downer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/txt"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="this is a mad test"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.213"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/preview_text_view_mid"
+            app:layout_constraintVertical_bias="0.466" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
