@@ -24,11 +24,7 @@ import com.bumptech.glide.request.RequestOptions
 class CameraFragmentRecyclerViewAdapter(
     private val mContext: Context?,
     private var values: ArrayList<ProductModel>,
-    val listener: (String) -> Unit,
-    val previewTextView: TextView,
-    val previewImageView: ImageView,
-    val previewConsLay: ConstraintLayout
-
+    val listener: (String) -> Unit
 ) :
 
 
@@ -72,7 +68,7 @@ class CameraFragmentRecyclerViewAdapter(
         var textView: TextView? = null
         var imageView: ImageView
         init {
-            textView = itemView?.findViewById(R.id.item_txt)
+            textView = itemView?.findViewById(R.id.item_txt_name)
             imageView = itemView?.findViewById(R.id.item_image)!!
         }
 
@@ -138,18 +134,7 @@ class CameraFragmentRecyclerViewAdapter(
     }
 
     private fun showpreivew(product: ProductModel) {
-        previewConsLay.visibility = View.VISIBLE
-
-        val options = RequestOptions()
-            .centerCrop()
-            .placeholder(R.mipmap.ic_launcher_round)
-            .error(R.mipmap.ic_launcher_round)
-        this.mContext?.applicationContext?.let { Glide.with(it).load(product.image).apply(options).into(previewImageView) }
-
-
-        previewTextView.text = product.item
-
-
+        CameraFragment.cha(product)
     }
 
     companion object {

@@ -2,6 +2,7 @@ package com.example.evoke.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class Send {
 
                         guessName[0] = object.getString("0");
                         String g = object.getString("0");
+
                         cameraRecyclerAdapter.addToDataSet(g);
                         Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
 
@@ -87,5 +89,11 @@ public class Send {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
+
+//    public static byte[] getJPGDataFromImage(Image image){
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+//        return byteArrayOutputStream.toByteArray();
+//    }
 
 }

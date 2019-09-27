@@ -66,6 +66,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.evoke.*
 import com.example.evoke.models.ProductModel
 import com.example.evoke.utils.*
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -99,10 +100,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
     private lateinit var viewFinder: TextureView
     private lateinit var outputDirectory: File
     private lateinit var broadcastManager: LocalBroadcastManager
-    private lateinit var previewTextView: TextView
-    private lateinit var previewImageView: ImageView
-    private lateinit var previewCons: ConstraintLayout
-
 
 
     lateinit var cameraRecyclerAdapter: CameraFragmentRecyclerViewAdapter
@@ -177,7 +174,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
                     CameraFragmentDirections.actionCameraToPermissions())
 
         }
-        mainHandler.postDelayed(updateTextTask, 5000)
+//        mainHandler.postDelayed(updateTextTask, 5000)
 
 
 
@@ -185,7 +182,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
     override fun onPause() {
         super.onPause()
-        mainHandler.removeCallbacks(updateTextTask)
+//        mainHandler.removeCallbacks(updateTextTask)
     }
 
     override fun onDestroyView() {
@@ -201,13 +198,13 @@ class CameraFragment : Fragment(), (String) -> Unit {
                               savedInstanceState: Bundle?): View? {
         val binding = inflater.inflate(R.layout.fragment_camera, container,false)
 
-        previewTextView = binding.findViewById(R.id.preview_text_view)
+        previewTextView = binding.findViewById(R.id.preview_text_view_upper)
         previewImageView = binding.findViewById(R.id.preview_image_view)
         previewCons = binding.findViewById(R.id.Cons_gred)
 
         val recyclerView: RecyclerView = binding.rootView.findViewById(R.id.recycler_result)
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this, previewTextView, previewImageView, previewCons)
+        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this)
         recyclerView.adapter = cameraRecyclerAdapter
 
         mainHandler = Handler(Looper.getMainLooper())
@@ -555,10 +552,22 @@ class CameraFragment : Fragment(), (String) -> Unit {
         private const val FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val PHOTO_EXTENSION = ".jpg"
 
+        private lateinit var previewCons: ConstraintLayout
+        private lateinit var previewTextView: TextView
+        private lateinit var previewImageView: ImageView
+
         /** Helper function used to create a timestamped file */
         private fun createFile(baseFolder: File, format: String, extension: String) =
                 File(baseFolder, SimpleDateFormat(format, Locale.US)
                         .format(System.currentTimeMillis()) + extension)
+
+        fun cha(product: ProductModel){
+            previewCons.visibility = View.VISIBLE
+
+            Picasso.get().load(product.image).into(previewImageView)
+            previewTextView.text = product.item
+
+        }
     }
 
 
