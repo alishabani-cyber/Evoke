@@ -33,8 +33,8 @@ public class Send {
                         JSONObject object = new JSONObject(new String(response.data));
                         Log.d(TAG, "SendImageRequest: Response " + object);
 
-                        guessName[0] = object.getString("0");
-                        String g = object.getString("0");
+                        guessName[0] = object.getString("one");
+                        String g = object.getString("one");
 
                         cameraRecyclerAdapter.addToDataSet(g);
                         Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
