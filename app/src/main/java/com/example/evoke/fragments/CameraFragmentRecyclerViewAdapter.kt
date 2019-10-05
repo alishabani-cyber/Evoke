@@ -60,7 +60,7 @@ class CameraFragmentRecyclerViewAdapter(
 
 
     fun addToDataSet(newValue: String?) {
-        if(newValue != null && !customContains(newValue)) {
+        if (newValue != null && !customContains(newValue)) {
 
             findInAPI(newValue)
             return
@@ -68,9 +68,10 @@ class CameraFragmentRecyclerViewAdapter(
     }
 
 
-    class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!){
+    class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         var textView: TextView? = null
         var imageView: ImageView
+
         init {
             textView = itemView?.findViewById(R.id.item_txt_name)
             imageView = itemView?.findViewById(R.id.item_image)!!
@@ -144,15 +145,12 @@ class CameraFragmentRecyclerViewAdapter(
         binding.invalidateAll()
 
         Picasso.get().load(product.image).into(binding.previewImageView)
-//        binding.previewImageView.text = product.title
-//            mPreviewStartTextView.text = product.start.toString()
-//            mPriceTextView.text = product.price.toString()
-//
-            binding.ConsGred.setOnClickListener { v: View? ->
-                val openURL = Intent(Intent.ACTION_VIEW)
-                openURL.data = Uri.parse(product.url)
-                appContext.startActivity(openURL)
-             }
+
+        binding.ConsGred.setOnClickListener { v: View? ->
+            val openURL = Intent(Intent.ACTION_VIEW)
+            openURL.data = Uri.parse(product.url)
+            appContext.startActivity(openURL)
+        }
     }
 
     companion object {

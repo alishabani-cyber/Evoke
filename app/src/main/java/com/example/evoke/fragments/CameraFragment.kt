@@ -74,9 +74,6 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-/** Helper type alias used for analysis use case callbacks */
-typealias LumaListener = (luma: Double) -> Unit
-
 /**
  * Main fragment for this app. Implements all camera operations including:
  * - Viewfinder
@@ -86,11 +83,9 @@ typealias LumaListener = (luma: Double) -> Unit
 class CameraFragment : Fragment(), (String) -> Unit {
     override fun invoke(p1: String) {
         Log.d(TAG, "String $p1")
-        val openURL = Intent(android.content.Intent.ACTION_VIEW)
+        val openURL = Intent(Intent.ACTION_VIEW)
         openURL.data = Uri.parse(p1)
         startActivity(openURL)
-
-
     }
 
     private lateinit var container: ConstraintLayout
@@ -105,7 +100,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
     private val updateTextTask = object : Runnable {
         override fun run() {
-            sendImage()
+//            sendImage()
             mainHandler.postDelayed(this, 4000)
         }
     }
@@ -117,23 +112,10 @@ class CameraFragment : Fragment(), (String) -> Unit {
     private var imageAnalyzer: ImageAnalysis? = null
     private var toast: Toast? = null;
 
-    /** Volume down button receiver used to trigger shutter */
-    private val volumeDownReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val keyCode = intent.getIntExtra(KEY_EVENT_EXTRA, KeyEvent.KEYCODE_UNKNOWN)
-            when (keyCode) {
-                // When the volume down button is pressed, simulate a shutter button click
-                KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                    val shutter = container
-                            .findViewById<ImageButton>(R.id.camera_capture_button)
-                    shutter.simulateClick()
-                }
-            }
-        }
-    }
+
 
     /** Declare worker thread at the class level so it can be reused after config changes */
-    private val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
+    private val analyzerThread = HandlerThread("QRCodeAnalyzer").apply { start() }
 
     /** Internal reference of the [DisplayManager] */
     private lateinit var displayManager: DisplayManager
@@ -186,7 +168,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
         super.onDestroyView()
 
         // Unregister the broadcast receivers and listeners
-        broadcastManager.unregisterReceiver(volumeDownReceiver)
         displayManager.unregisterDisplayListener(displayListener)
     }
 
@@ -199,14 +180,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
             inflater, R.layout.fragment_camera, container, false)
 
         appContext = this.context!!
-
-        binding.quickViewProduct = quickViewProduct
-
-        previewTextView = binding.previewTextViewUpper
-        previewImageView = binding.previewImageView
-        previewCons = binding.ConsGred
-        mPreviewStartTextView = binding.starts
-        mPriceTextView = binding.price
 
         val recyclerView: RecyclerView = binding.recyclerResult
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
@@ -289,7 +262,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
         // Set up the intent filter that will receive events from our main activity
         val filter = IntentFilter().apply { addAction(KEY_EVENT_ACTION) }
-        broadcastManager.registerReceiver(volumeDownReceiver, filter)
 
         // Every time the orientation of device changes, recompute layout
         displayManager = viewFinder.context
@@ -374,14 +346,14 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
 
         imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
-            analyzer =  QrCodeAnalyzer { qrCodes ->
+            analyzer =  QrCodeAnalyzer( { qrCodes ->
                 qrCodes.forEach {
-//                    Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
+                                        Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
 //                    showToast("QR Code detected: ${it.rawValue}.")
                     cameraRecyclerAdapter.addToDataSet(it.rawValue)
 
                 }
-            }
+            }, {name -> Log.d(TAG, name)}, context!!)
         }
 
         // Apply declared configs to CameraX using the same lifecycle owner
@@ -466,41 +438,12 @@ class CameraFragment : Fragment(), (String) -> Unit {
         private const val PHOTO_EXTENSION = ".jpg"
 
         lateinit  var appContext: Context
-//        private lateinit var binding :FragmentCameraBinding
-
-        private lateinit var previewCons: ConstraintLayout
-        private lateinit var previewTextView: TextView
-        private lateinit var mPreviewStartTextView : TextView
-        private lateinit var mPriceTextView: TextView
-        private lateinit var previewImageView: ImageView
-        private var quickViewProduct: ProductModel = ProductModel(1, "2", "3", "4", 2, 1, "e")
 
         /** Helper function used to create a timestamped file */
         private fun createFile(baseFolder: File, format: String, extension: String) =
                 File(baseFolder, SimpleDateFormat(format, Locale.US)
                         .format(System.currentTimeMillis()) + extension)
 
-        fun cha(product: ProductModel){
-
-            Log.d(TAG, "Cha")
-//            binding.invalidateAll()
-//            quickViewProduct = product
-
-//            previewCons.visibility = View.VISIBLE
-//
-//            Picasso.get().load(product.image).into(previewImageView)
-//            previewTextView.text = product.title
-//            mPreviewStartTextView.text = product.start.toString()
-//            mPriceTextView.text = product.price.toString()
-////
-//            previewCons.setOnClickListener { v: View? ->
-//                val openURL = Intent(android.content.Intent.ACTION_VIEW)
-//                openURL.data = Uri.parse(product.url)
-//
-//                appContext.startActivity(openURL)
-//             }
-
-        }
     }
 
 
@@ -515,14 +458,14 @@ class CameraFragment : Fragment(), (String) -> Unit {
         val shutter = container
             .findViewById<ImageButton>(R.id.camera_capture_button)
 //        shutter.simulateClick()
-        shutter.performClick();
+        shutter.performClick()
 
     }
 
     fun SendImageRequest(imagePath: File) {
         var filePath = imagePath.path
         var bitmap = BitmapFactory.decodeFile(filePath);
-        var st = Send.SendImageRequest(bitmap, context, cameraRecyclerAdapter)
+//        var st = Send.SendImageRequest(bitmap, context, cameraRecyclerAdapter)
 
     }
 
