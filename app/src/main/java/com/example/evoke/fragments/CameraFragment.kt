@@ -50,12 +50,12 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCapture.CaptureMode
 import androidx.camera.core.ImageCapture.Metadata
 import androidx.camera.core.ImageCaptureConfig
-import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.core.PreviewConfig
 import androidx.navigation.Navigation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.setPadding
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -64,20 +64,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.evoke.*
+import com.example.evoke.databinding.FragmentCameraBinding
 import com.example.evoke.models.ProductModel
 import com.example.evoke.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.Exception
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
-import java.util.ArrayDeque
 import java.util.Locale
-import java.util.concurrent.TimeUnit
-
-/** Helper type alias used for analysis use case callbacks */
-typealias LumaListener = (luma: Double) -> Unit
 
 /**
  * Main fragment for this app. Implements all camera operations including:
@@ -88,21 +83,15 @@ typealias LumaListener = (luma: Double) -> Unit
 class CameraFragment : Fragment(), (String) -> Unit {
     override fun invoke(p1: String) {
         Log.d(TAG, "String $p1")
-        val openURL = Intent(android.content.Intent.ACTION_VIEW)
+        val openURL = Intent(Intent.ACTION_VIEW)
         openURL.data = Uri.parse(p1)
         startActivity(openURL)
-
-
     }
 
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: TextureView
     private lateinit var outputDirectory: File
     private lateinit var broadcastManager: LocalBroadcastManager
-    private lateinit var previewTextView: TextView
-    private lateinit var previewImageView: ImageView
-    private lateinit var previewCons: ConstraintLayout
-
 
 
     lateinit var cameraRecyclerAdapter: CameraFragmentRecyclerViewAdapter
@@ -111,7 +100,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
     private val updateTextTask = object : Runnable {
         override fun run() {
-            sendImage()
+//            sendImage()
             mainHandler.postDelayed(this, 4000)
         }
     }
@@ -123,23 +112,10 @@ class CameraFragment : Fragment(), (String) -> Unit {
     private var imageAnalyzer: ImageAnalysis? = null
     private var toast: Toast? = null;
 
-    /** Volume down button receiver used to trigger shutter */
-    private val volumeDownReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val keyCode = intent.getIntExtra(KEY_EVENT_EXTRA, KeyEvent.KEYCODE_UNKNOWN)
-            when (keyCode) {
-                // When the volume down button is pressed, simulate a shutter button click
-                KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                    val shutter = container
-                            .findViewById<ImageButton>(R.id.camera_capture_button)
-                    shutter.simulateClick()
-                }
-            }
-        }
-    }
+
 
     /** Declare worker thread at the class level so it can be reused after config changes */
-    private val analyzerThread = HandlerThread("LuminosityAnalysis").apply { start() }
+    private val analyzerThread = HandlerThread("QRCodeAnalyzer").apply { start() }
 
     /** Internal reference of the [DisplayManager] */
     private lateinit var displayManager: DisplayManager
@@ -192,28 +168,28 @@ class CameraFragment : Fragment(), (String) -> Unit {
         super.onDestroyView()
 
         // Unregister the broadcast receivers and listeners
-        broadcastManager.unregisterReceiver(volumeDownReceiver)
         displayManager.unregisterDisplayListener(displayListener)
     }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding = inflater.inflate(R.layout.fragment_camera, container,false)
+//        val binding = inflater.inflate(R.layout.fragment_camera, container,false)
 
-        previewTextView = binding.findViewById(R.id.preview_text_view)
-        previewImageView = binding.findViewById(R.id.preview_image_view)
-        previewCons = binding.findViewById(R.id.Cons_gred)
+        val binding = DataBindingUtil.inflate<FragmentCameraBinding>(
+            inflater, R.layout.fragment_camera, container, false)
 
-        val recyclerView: RecyclerView = binding.rootView.findViewById(R.id.recycler_result)
+        appContext = this.context!!
+
+        val recyclerView: RecyclerView = binding.recyclerResult
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this, previewTextView, previewImageView, previewCons)
+        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this, binding)
         recyclerView.adapter = cameraRecyclerAdapter
 
         mainHandler = Handler(Looper.getMainLooper())
 //        mainHandler.post(updateTextTask)
 
-        return binding.rootView
+        return binding.root
     }
 
     private fun generateFakeValues(): ArrayList<ProductModel> {
@@ -286,7 +262,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
         // Set up the intent filter that will receive events from our main activity
         val filter = IntentFilter().apply { addAction(KEY_EVENT_ACTION) }
-        broadcastManager.registerReceiver(volumeDownReceiver, filter)
 
         // Every time the orientation of device changes, recompute layout
         displayManager = viewFinder.context
@@ -370,29 +345,15 @@ class CameraFragment : Fragment(), (String) -> Unit {
         }.build()
 
 
-//        imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
-//            analyzer = LuminosityAnalyzer { luma ->
-//                // Values returned from our analyzer are passed to the attached listener
-//                // We log imageView analysis results here -- you should do something useful instead!
-//                val fps = (analyzer as LuminosityAnalyzer).framesPerSecond
-//                Log.d(
-//                    TAG, "Average luminosity: $luma. " +
-//                        "Frames per second: ${"%.01f".format(fps)}")
-//            }
-//
-//        }
-//
-//        imageAnalysis.analyzer = qrCodeAnalyzer
-
         imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
-            analyzer =  QrCodeAnalyzer { qrCodes ->
+            analyzer =  QrCodeAnalyzer( { qrCodes ->
                 qrCodes.forEach {
-//                    Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
+                                        Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
 //                    showToast("QR Code detected: ${it.rawValue}.")
                     cameraRecyclerAdapter.addToDataSet(it.rawValue)
 
                 }
-            }
+            }, {name -> Log.d(TAG, name)}, context!!)
         }
 
         // Apply declared configs to CameraX using the same lifecycle owner
@@ -471,94 +432,18 @@ class CameraFragment : Fragment(), (String) -> Unit {
     }
 
 
-    /**
-     * Our custom imageView analysis class.
-     *
-     * <p>All we need to do is override the function `analyze` with our desired operations. Here,
-     * we compute the average luminosity of the imageView by looking at the Y plane of the YUV frame.
-     */
-    private class LuminosityAnalyzer(listener: LumaListener? = null) : ImageAnalysis.Analyzer {
-        private val frameRateWindow = 8
-        private val frameTimestamps = ArrayDeque<Long>(5)
-        private val listeners = ArrayList<LumaListener>().apply { listener?.let { add(it) } }
-        private var lastAnalyzedTimestamp = 0L
-        var framesPerSecond: Double = -1.0
-            private set
-
-        /**
-         * Used to add listeners that will be called with each luma computed
-         */
-        fun onFrameAnalyzed(listener: LumaListener) = listeners.add(listener)
-
-        /**
-         * Helper extension function used to extract a byte array from an imageView plane buffer
-         */
-        private fun ByteBuffer.toByteArray(): ByteArray {
-            rewind()    // Rewind the buffer to zero
-            val data = ByteArray(remaining())
-            get(data)   // Copy the buffer into a byte array
-            return data // Return the byte array
-        }
-
-        /**
-         * Analyzes an imageView to produce a result.
-         *
-         * <p>The caller is responsible for ensuring this analysis method can be executed quickly
-         * enough to prevent stalls in the imageView acquisition pipeline. Otherwise, newly available
-         * images will not be acquired and analyzed.
-         *
-         * <p>The imageView passed to this method becomes invalid after this method returns. The caller
-         * should not store external references to this imageView, as these references will become
-         * invalid.
-         *
-         * @param image imageView being analyzed VERY IMPORTANT: do not close the imageView, it will be
-         * automatically closed after this method returns
-         * @return the imageView analysis result
-         */
-        override fun analyze(image: ImageProxy, rotationDegrees: Int) {
-            // If there are no listeners attached, we don't need to perform analysis
-            if (listeners.isEmpty()) return
-
-            // Keep track of frames analyzed
-            frameTimestamps.push(System.currentTimeMillis())
-
-            // Compute the FPS using a moving average
-            while (frameTimestamps.size >= frameRateWindow) frameTimestamps.removeLast()
-            framesPerSecond = 1.0 / ((frameTimestamps.peekFirst() -
-                    frameTimestamps.peekLast())  / frameTimestamps.size.toDouble()) * 1000.0
-
-            // Calculate the average luma no more often than every second
-            if (frameTimestamps.first - lastAnalyzedTimestamp >= TimeUnit.SECONDS.toMillis(1)) {
-                lastAnalyzedTimestamp = frameTimestamps.first
-
-                // Since format in ImageAnalysis is YUV, imageView.planes[0] contains the luminance
-                //  plane
-                val buffer = image.planes[0].buffer
-
-                // Extract imageView data from callback object
-                val data = buffer.toByteArray()
-
-                // Convert the data into an array of pixel values ranging 0-255
-                val pixels = data.map { it.toInt() and 0xFF }
-
-                // Compute average luminance for the imageView
-                val luma = pixels.average()
-
-                // Call all listeners with new value
-                listeners.forEach { it(luma) }
-            }
-        }
-    }
-
     companion object {
         private const val TAG = "CameraXBasic"
         private const val FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val PHOTO_EXTENSION = ".jpg"
 
+        lateinit  var appContext: Context
+
         /** Helper function used to create a timestamped file */
         private fun createFile(baseFolder: File, format: String, extension: String) =
                 File(baseFolder, SimpleDateFormat(format, Locale.US)
                         .format(System.currentTimeMillis()) + extension)
+
     }
 
 
@@ -573,14 +458,14 @@ class CameraFragment : Fragment(), (String) -> Unit {
         val shutter = container
             .findViewById<ImageButton>(R.id.camera_capture_button)
 //        shutter.simulateClick()
-        shutter.performClick();
+        shutter.performClick()
 
     }
 
     fun SendImageRequest(imagePath: File) {
         var filePath = imagePath.path
         var bitmap = BitmapFactory.decodeFile(filePath);
-        var st = Send.SendImageRequest(bitmap, context, cameraRecyclerAdapter)
+//        var st = Send.SendImageRequest(bitmap, context, cameraRecyclerAdapter)
 
     }
 

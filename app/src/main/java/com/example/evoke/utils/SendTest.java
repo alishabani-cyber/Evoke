@@ -2,7 +2,6 @@ package com.example.evoke.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,10 +18,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Send {
-    private static final String TAG = Send.class.getSimpleName();
+public class SendTest {
+    private static final String TAG = SendTest.class.getSimpleName();
 
-    public static void SendImageRequest(Bitmap imageBitmap, Context context, CameraFragmentRecyclerViewAdapter cameraRecyclerAdapter) {
+    public static void SendImageRequest(Bitmap imageBitmap, Context context) {
         String url = "http://94.182.189.118/api/ai/image/";
         final String[] guessName = {null};
 
@@ -35,10 +34,6 @@ public class Send {
 
                         guessName[0] = object.getString("one");
                         String g = object.getString("one");
-
-                        cameraRecyclerAdapter.addToDataSet(g);
-                        Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
-
 
 
                     } catch (JSONException e) {

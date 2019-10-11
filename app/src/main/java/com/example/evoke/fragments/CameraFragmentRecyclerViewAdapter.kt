@@ -1,13 +1,13 @@
 package com.example.evoke.fragments
 
 import android.content.Context
-import android.os.Handler
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.Response
@@ -19,21 +19,21 @@ import com.example.evoke.utils.VolleyService
 import com.google.gson.Gson
 import org.json.JSONObject
 import com.bumptech.glide.request.RequestOptions
+import com.example.evoke.databinding.FragmentCameraBinding
+import com.example.evoke.fragments.CameraFragment.Companion.appContext
+import com.squareup.picasso.Picasso
 
 
 class CameraFragmentRecyclerViewAdapter(
     private val mContext: Context?,
     private var values: ArrayList<ProductModel>,
     val listener: (String) -> Unit,
-    val previewTextView: TextView,
-    val previewImageView: ImageView,
-    val previewConsLay: ConstraintLayout
-
-) :
-
-
-
-    RecyclerView.Adapter<CameraFragmentRecyclerViewAdapter.ViewHolder>() {
+    val binding: FragmentCameraBinding
+) : RecyclerView.Adapter<CameraFragmentRecyclerViewAdapter.ViewHolder>() {
+    init {
+        var quickViewProduct: ProductModel = ProductModel(1, "2", "3", "4", 2, 1, "e")
+        binding.quickViewProduct = quickViewProduct
+    }
 
     var stop: Int = 1;
     override fun getItemCount(): Int {
@@ -60,7 +60,7 @@ class CameraFragmentRecyclerViewAdapter(
 
 
     fun addToDataSet(newValue: String?) {
-        if(newValue != null && !customContains(newValue)) {
+        if (newValue != null && !customContains(newValue)) {
 
             findInAPI(newValue)
             return
@@ -68,11 +68,12 @@ class CameraFragmentRecyclerViewAdapter(
     }
 
 
-    class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!){
+    class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         var textView: TextView? = null
         var imageView: ImageView
+
         init {
-            textView = itemView?.findViewById(R.id.item_txt)
+            textView = itemView?.findViewById(R.id.item_txt_name)
             imageView = itemView?.findViewById(R.id.item_image)!!
         }
 
@@ -118,6 +119,7 @@ class CameraFragmentRecyclerViewAdapter(
                     if (!customContains(testModel.item)) {
                         this.values.add(0, testModel)
                         notifyDataSetChanged()
+                        binding.invalidateAll()
                         showpreivew(testModel)
 
                     }
@@ -138,18 +140,17 @@ class CameraFragmentRecyclerViewAdapter(
     }
 
     private fun showpreivew(product: ProductModel) {
-        previewConsLay.visibility = View.VISIBLE
+//        CameraFragment.cha(product)
+        binding.quickViewProduct = product
+        binding.invalidateAll()
 
-        val options = RequestOptions()
-            .centerCrop()
-            .placeholder(R.mipmap.ic_launcher_round)
-            .error(R.mipmap.ic_launcher_round)
-        this.mContext?.applicationContext?.let { Glide.with(it).load(product.image).apply(options).into(previewImageView) }
+        Picasso.get().load(product.image).into(binding.previewImageView)
 
-
-        previewTextView.text = product.item
-
-
+        binding.ConsGred.setOnClickListener { v: View? ->
+            val openURL = Intent(Intent.ACTION_VIEW)
+            openURL.data = Uri.parse(product.url)
+            appContext.startActivity(openURL)
+        }
     }
 
     companion object {
