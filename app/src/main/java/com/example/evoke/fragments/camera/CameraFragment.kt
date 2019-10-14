@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.evoke.fragments
+package com.example.evoke.fragments.camera
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.hardware.Camera
@@ -33,7 +31,6 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Rational
 import android.util.Size
-import android.view.KeyEvent
 import android.widget.Toast
 import android.view.LayoutInflater
 import android.view.TextureView
@@ -41,8 +38,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysisConfig
@@ -57,6 +52,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.setPadding
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -65,14 +63,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.evoke.*
 import com.example.evoke.databinding.FragmentCameraBinding
+import com.example.evoke.fragments.EXTENSION_WHITELIST
+import com.example.evoke.fragments.PermissionsFragment
 import com.example.evoke.models.ProductModel
 import com.example.evoke.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.lang.Exception
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Main fragment for this app. Implements all camera operations including:
@@ -88,6 +90,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
         startActivity(openURL)
     }
 
+    private lateinit var viewModel: CameraViewModel
     private lateinit var container: ConstraintLayout
     private lateinit var viewFinder: TextureView
     private lateinit var outputDirectory: File
@@ -149,7 +152,8 @@ class CameraFragment : Fragment(), (String) -> Unit {
         //  while the app was on paused state
         if (!PermissionsFragment.hasPermissions(requireContext())) {
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                    CameraFragmentDirections.actionCameraToPermissions())
+                CameraFragmentDirections.actionCameraToPermissions()
+            )
 
         }
         mainHandler.postDelayed(updateTextTask, 5000)
@@ -175,6 +179,13 @@ class CameraFragment : Fragment(), (String) -> Unit {
                               savedInstanceState: Bundle?): View? {
 //        val binding = inflater.inflate(R.layout.fragment_camera, container,false)
 
+        viewModel = ViewModelProviders.of(this).get(CameraViewModel::class.java)
+
+        viewModel._productList.observe(this, Observer { products ->
+            Timber.i("add new Product in observer is here $products")
+            cameraRecyclerAdapter.swapDataSet(products)
+        })
+
         val binding = DataBindingUtil.inflate<FragmentCameraBinding>(
             inflater, R.layout.fragment_camera, container, false)
 
@@ -182,7 +193,13 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
         val recyclerView: RecyclerView = binding.recyclerResult
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        cameraRecyclerAdapter = CameraFragmentRecyclerViewAdapter(context, generateFakeValues(), this, binding)
+        cameraRecyclerAdapter =
+            CameraFragmentRecyclerViewAdapter(
+                context,
+                generateFakeValues(),
+                this,
+                binding
+            )
         recyclerView.adapter = cameraRecyclerAdapter
 
         mainHandler = Handler(Looper.getMainLooper())
@@ -225,7 +242,9 @@ class CameraFragment : Fragment(), (String) -> Unit {
         override fun onImageSaved(photoFile: File) {
             Log.d(TAG, "Photo capture succeeded: ${photoFile.absolutePath}")
 
-            SendImageRequest(photoFile)
+            var quickViewProduct = ProductModel(1, "1", "1", "1", 1, 1, "1")
+            Timber.i("new product added to view model product list $quickViewProduct")
+            viewModel.addNewProduct(quickViewProduct)
 
 
             // We can only change the foreground Drawable using API level 23+ API
@@ -349,7 +368,8 @@ class CameraFragment : Fragment(), (String) -> Unit {
                 qrCodes.forEach {
                                         Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
 //                    showToast("QR Code detected: ${it.rawValue}.")
-                    cameraRecyclerAdapter.addToDataSet(it.rawValue)
+//                    cameraRecyclerAdapter.addToDataSet(it.rawValue)
+                    viewModel.addToProduct(it.rawValue, context!!)
 
                 }
             }, {name -> Log.d(TAG, name)}, context!!)
@@ -380,7 +400,12 @@ class CameraFragment : Fragment(), (String) -> Unit {
             imageCapture?.let { imageCapture ->
 
                 // Create output file to hold the imageView
-                val photoFile = createFile(outputDirectory, FILENAME, PHOTO_EXTENSION)
+                val photoFile =
+                    createFile(
+                        outputDirectory,
+                        FILENAME,
+                        PHOTO_EXTENSION
+                    )
 
                 // Setup imageView capture metadata
                 val metadata = Metadata().apply {
@@ -426,7 +451,10 @@ class CameraFragment : Fragment(), (String) -> Unit {
         // Listener for button used to view last photo
         controls.findViewById<ImageButton>(R.id.photo_view_button).setOnClickListener {
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                    CameraFragmentDirections.actionCameraToGallery(outputDirectory.absolutePath))
+                CameraFragmentDirections.actionCameraToGallery(
+                    outputDirectory.absolutePath
+                )
+            )
         }
     }
 
@@ -451,21 +479,4 @@ class CameraFragment : Fragment(), (String) -> Unit {
         toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT)
         toast?.show()
     }
-
-    private fun sendImage(){
-        Log.d(TAG, "SEND IMAGe")
-        val shutter = container
-            .findViewById<ImageButton>(R.id.camera_capture_button)
-//        shutter.simulateClick()
-        shutter.performClick()
-
-    }
-
-    fun SendImageRequest(imagePath: File) {
-        var filePath = imagePath.path
-        var bitmap = BitmapFactory.decodeFile(filePath);
-//        var st = Send.SendImageRequest(bitmap, context, cameraRecyclerAdapter)
-
-    }
-
 }

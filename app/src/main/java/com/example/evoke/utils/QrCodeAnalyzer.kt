@@ -17,8 +17,7 @@ import java.util.*
 class QrCodeAnalyzer(
     private val onQrCodesDetected: (qrCodes: List<FirebaseVisionBarcode>) -> Unit,
     private val onImageDetected: (name: String) -> Unit,
-    val context: Context,
-    val interval:Int = 3000
+    val context: Context
 ) : ImageAnalysis.Analyzer {
 
 
@@ -32,6 +31,10 @@ class QrCodeAnalyzer(
         val rotation = rotationDegreesToFirebaseRotation(rotationDegrees)
         val visionImage = FirebaseVisionImage.fromMediaImage(image.image!!, rotation)
 
+        // each ten times call this function
+        // so we do not over load the server with new images
+        // this values can increased from server side
+        // so the performance match the server balance
         if (gotoImage == 0) {
             sendImage(visionImage.bitmap)
             gotoImage = 10

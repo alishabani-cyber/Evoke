@@ -1,4 +1,4 @@
-package com.example.evoke.fragments
+package com.example.evoke.fragments.camera
 
 import android.content.Context
 import android.content.Intent
@@ -20,7 +20,8 @@ import com.google.gson.Gson
 import org.json.JSONObject
 import com.bumptech.glide.request.RequestOptions
 import com.example.evoke.databinding.FragmentCameraBinding
-import com.example.evoke.fragments.CameraFragment.Companion.appContext
+import com.example.evoke.fragments.camera.CameraFragment.Companion.appContext
+import com.example.evoke.network.VolleyRequestSinglton
 import com.squareup.picasso.Picasso
 
 
@@ -50,7 +51,9 @@ class CameraFragmentRecyclerViewAdapter(
         var layoutId: Int = 0
         layoutId = R.layout.list_items
         val itemView = LayoutInflater.from(mContext).inflate(layoutId, parent, false)
-        return ViewHolder(itemView)
+        return ViewHolder(
+            itemView
+        )
     }
 
     public fun swapDataSet(list: ArrayList<ProductModel>) {

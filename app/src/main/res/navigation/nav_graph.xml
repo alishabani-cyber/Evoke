@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/camera_fragment"
-        android:name="com.example.evoke.fragments.CameraFragment"
+        android:name="com.example.evoke.fragments.camera.CameraFragment"
         android:label="CameraFragment" >
 
         <action

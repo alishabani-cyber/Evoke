@@ -2,7 +2,6 @@ package com.example.evoke.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -10,7 +9,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.Volley;
-import com.example.evoke.fragments.CameraFragmentRecyclerViewAdapter;
+import com.example.evoke.fragments.camera.CameraFragmentRecyclerViewAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +30,7 @@ public class Send {
                 response -> {
                     try {
                         JSONObject object = new JSONObject(new String(response.data));
-                        Log.d(TAG, "SendImageRequest: Response " + object);
+                        Log.d(TAG, "sendImageRequest: Response " + object);
 
                         guessName[0] = object.getString("one");
                         String g = object.getString("one");
