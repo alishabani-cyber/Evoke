@@ -32,8 +32,11 @@ class QrCodeAnalyzer(
         val rotation = rotationDegreesToFirebaseRotation(rotationDegrees)
         val visionImage = FirebaseVisionImage.fromMediaImage(image.image!!, rotation)
 
-        if (false) {
+        if (gotoImage == 0) {
             sendImage(visionImage.bitmap)
+            gotoImage = 10
+        } else {
+            gotoImage--
         }
         detector.detectInImage(visionImage)
             .addOnSuccessListener { barcodes ->
@@ -59,7 +62,12 @@ class QrCodeAnalyzer(
 
     private fun sendImage(bitmap: Bitmap) {
         var st = SendTest.SendImageRequest(bitmap, context)
+//        Timber.i("send image to server")
         onImageDetected("test")
 
+    }
+
+    companion object {
+        var gotoImage = 10
     }
 }

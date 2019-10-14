@@ -1,5 +1,6 @@
 package com.example.evoke
 
+
 import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
@@ -9,7 +10,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Intent
 import android.widget.FrameLayout
 import com.example.evoke.utils.FLAGS_FULLSCREEN
-import com.example.evoke.utils.VolleyService
 
 const val KEY_EVENT_ACTION = "key_event_action"
 const val KEY_EVENT_EXTRA = "key_event_extra"
@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        VolleyService.initialize(this)
-
         container = findViewById(R.id.fragment_container)
     }
 

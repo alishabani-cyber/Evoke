@@ -93,7 +93,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
     private lateinit var outputDirectory: File
     private lateinit var broadcastManager: LocalBroadcastManager
 
-
     lateinit var cameraRecyclerAdapter: CameraFragmentRecyclerViewAdapter
 
     lateinit var mainHandler: Handler

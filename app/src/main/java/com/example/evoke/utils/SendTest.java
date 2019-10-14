@@ -34,6 +34,7 @@ public class SendTest {
 
                         guessName[0] = object.getString("one");
                         String g = object.getString("one");
+                        Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
 
 
                     } catch (JSONException e) {
