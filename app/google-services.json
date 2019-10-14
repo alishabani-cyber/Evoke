@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "510783720907",
+    "firebase_url": "https://evoke-d83bd.firebaseio.com",
+    "project_id": "evoke-d83bd",
+    "storage_bucket": "evoke-d83bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510783720907:android:930e3424b69248edcf3a4e",
+        "android_client_info": {
+          "package_name": "com.example.evoke"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510783720907-1k6censrhtrvektmuriejp0k7211b775.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdUpfGjmByr3-dQwX2Mx4txhAUhR5nwUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510783720907-1k6censrhtrvektmuriejp0k7211b775.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
