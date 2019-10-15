@@ -25,7 +25,6 @@ public class SendTest {
 
     public static void SendImageRequest(Bitmap imageBitmap, Context context, SendCallBackListener callback) {
         String url = "http://94.182.189.118/api/ai/image/";
-        final String[] guessName = {null};
 
         VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(
                 Request.Method.POST, url,
@@ -34,7 +33,6 @@ public class SendTest {
                         JSONObject object = new JSONObject(new String(response.data));
                         Log.d(TAG, "sendImageRequest: Response " + object);
 
-                        guessName[0] = object.getString("one");
                         String g = object.getString("one");
                         Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
 

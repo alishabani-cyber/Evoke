@@ -7,7 +7,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.evoke.models.ProductModel
-import com.example.evoke.network.VolleyRequestSinglton
+import com.example.evoke.network.VolleyRequestSingleton
 import com.google.gson.Gson
 import org.json.JSONObject
 import kotlin.collections.ArrayList
@@ -51,7 +51,7 @@ class CameraViewModel : ViewModel() {
             _productList.value = arrayListOf<ProductModel>()
         }
         // add the new value to list
-        _productList.value?.add(value)
+        _productList.value?.add(0, value)
 //        Timber.i("added values are ${_productList.value}")
         // force live data to notify changes
         _productList.value = _productList.value
@@ -104,7 +104,7 @@ class CameraViewModel : ViewModel() {
                 })
 
 
-            VolleyRequestSinglton.getInstance(context).addToRequestQueue(request)
+            VolleyRequestSingleton.getInstance(context).addToRequestQueue(request)
 
         }
     }
