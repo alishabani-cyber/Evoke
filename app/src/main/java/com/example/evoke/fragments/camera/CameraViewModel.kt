@@ -8,7 +8,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.evoke.models.ProductModel
 import com.example.evoke.network.VolleyRequestSinglton
-import com.example.evoke.utils.VolleyService
 import com.google.gson.Gson
 import org.json.JSONObject
 import kotlin.collections.ArrayList

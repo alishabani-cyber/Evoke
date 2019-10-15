@@ -1,9 +1,10 @@
-package com.example.evoke.utils
+package com.example.evoke.network
 
 import android.content.Context
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.Volley
+import com.example.evoke.utils.LruBitmapCache
 
 
 object VolleyService {
@@ -11,9 +12,12 @@ object VolleyService {
 
     val requestQueue: RequestQueue by lazy { Volley.newRequestQueue(context) }
 
-    val imageLoader: ImageLoader by lazy { ImageLoader(requestQueue, LruBitmapCache()) }
+    val imageLoader: ImageLoader by lazy { ImageLoader(
+        requestQueue,
+        LruBitmapCache()
+    ) }
 
     fun initialize(context: Context) {
-        this.context = context.applicationContext
+        VolleyService.context = context.applicationContext
     }
 }

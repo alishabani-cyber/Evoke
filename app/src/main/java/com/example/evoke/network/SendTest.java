@@ -1,14 +1,17 @@
-package com.example.evoke.utils;
+package com.example.evoke.network;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.lifecycle.ViewModelProviders;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.Volley;
+import com.example.evoke.fragments.camera.CameraViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +23,7 @@ import java.util.Map;
 public class SendTest {
     private static final String TAG = SendTest.class.getSimpleName();
 
-    public static void SendImageRequest(Bitmap imageBitmap, Context context) {
+    public static void SendImageRequest(Bitmap imageBitmap, Context context, SendCallBackListener callback) {
         String url = "http://94.182.189.118/api/ai/image/";
         final String[] guessName = {null};
 
@@ -35,9 +38,11 @@ public class SendTest {
                         String g = object.getString("one");
                         Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
 
+                        callback.onResponseEvent(g);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+//                        callback.onResponseEvent(null);
 
                     }
                 },
@@ -91,4 +96,7 @@ public class SendTest {
 //        return byteArrayOutputStream.toByteArray();
 //    }
 
+    public interface SendCallBackListener {
+        void onResponseEvent(String result);
+    }
 }

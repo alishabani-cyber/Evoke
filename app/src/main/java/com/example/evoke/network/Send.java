@@ -1,4 +1,4 @@
-package com.example.evoke.utils;
+package com.example.evoke.network;
 
 import android.content.Context;
 import android.graphics.Bitmap;

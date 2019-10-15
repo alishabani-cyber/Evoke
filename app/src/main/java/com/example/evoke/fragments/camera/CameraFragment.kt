@@ -53,7 +53,6 @@ import androidx.core.view.setPadding
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -66,6 +65,8 @@ import com.example.evoke.databinding.FragmentCameraBinding
 import com.example.evoke.fragments.EXTENSION_WHITELIST
 import com.example.evoke.fragments.PermissionsFragment
 import com.example.evoke.models.ProductModel
+import com.example.evoke.network.ANIMATION_FAST_MILLIS
+import com.example.evoke.network.ANIMATION_SLOW_MILLIS
 import com.example.evoke.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -372,7 +373,10 @@ class CameraFragment : Fragment(), (String) -> Unit {
                     viewModel.addToProduct(it.rawValue, context!!)
 
                 }
-            }, {name -> Log.d(TAG, name)}, context!!)
+            }, {name ->
+                Log.d(TAG, "in fragment $name")
+                viewModel.addToProduct(name, context!!)
+            }, context!!)
         }
 
         // Apply declared configs to CameraX using the same lifecycle owner
@@ -423,7 +427,9 @@ class CameraFragment : Fragment(), (String) -> Unit {
                     container.postDelayed({
                         container.foreground = ColorDrawable(Color.WHITE)
                         container.postDelayed(
-                                { container.foreground = null }, ANIMATION_FAST_MILLIS)
+                                { container.foreground = null },
+                            ANIMATION_FAST_MILLIS
+                        )
                     }, ANIMATION_SLOW_MILLIS)
                 }
             }

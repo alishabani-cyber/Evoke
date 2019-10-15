@@ -36,8 +36,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.navArgs
 import com.example.evoke.BuildConfig
 import com.example.evoke.R
-import com.example.evoke.utils.padWithDisplayCutout
-import com.example.evoke.utils.showImmersive
+import com.example.evoke.network.padWithDisplayCutout
+import com.example.evoke.network.showImmersive
 
 
 val EXTENSION_WHITELIST = arrayOf("JPG")

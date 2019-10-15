@@ -6,12 +6,15 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import com.example.evoke.network.SendTest
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
-import java.util.*
+
+
+const val INTERVAL = 20
 
 
 class QrCodeAnalyzer(
@@ -37,7 +40,7 @@ class QrCodeAnalyzer(
         // so the performance match the server balance
         if (gotoImage == 0) {
             sendImage(visionImage.bitmap)
-            gotoImage = 10
+            gotoImage = INTERVAL
         } else {
             gotoImage--
         }
@@ -64,13 +67,12 @@ class QrCodeAnalyzer(
     }
 
     private fun sendImage(bitmap: Bitmap) {
-        var st = SendTest.SendImageRequest(bitmap, context)
+//        SendTest.SendImageRequest(bitmap, context)
+        SendTest.SendImageRequest(bitmap, context, SendTest.SendCallBackListener(onImageDetected))
 //        Timber.i("send image to server")
-        onImageDetected("test")
-
     }
 
     companion object {
-        var gotoImage = 10
+        var gotoImage = INTERVAL
     }
 }

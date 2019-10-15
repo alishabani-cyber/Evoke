@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.evoke.utils
+package com.example.evoke.network
 
 import android.os.Build
 import android.view.DisplayCutout

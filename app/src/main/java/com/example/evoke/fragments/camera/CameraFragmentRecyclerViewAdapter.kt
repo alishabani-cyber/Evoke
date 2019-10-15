@@ -15,13 +15,12 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.bumptech.glide.Glide
 import com.example.evoke.R
 import com.example.evoke.models.ProductModel
-import com.example.evoke.utils.VolleyService
+import com.example.evoke.network.VolleyService
 import com.google.gson.Gson
 import org.json.JSONObject
 import com.bumptech.glide.request.RequestOptions
 import com.example.evoke.databinding.FragmentCameraBinding
 import com.example.evoke.fragments.camera.CameraFragment.Companion.appContext
-import com.example.evoke.network.VolleyRequestSinglton
 import com.squareup.picasso.Picasso
 
 

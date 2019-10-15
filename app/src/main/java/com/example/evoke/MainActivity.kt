@@ -9,7 +9,7 @@ import java.io.File
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.content.Intent
 import android.widget.FrameLayout
-import com.example.evoke.utils.FLAGS_FULLSCREEN
+import com.example.evoke.network.FLAGS_FULLSCREEN
 
 const val KEY_EVENT_ACTION = "key_event_action"
 const val KEY_EVENT_EXTRA = "key_event_extra"
