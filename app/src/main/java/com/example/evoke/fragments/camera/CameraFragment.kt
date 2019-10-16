@@ -80,11 +80,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-@BindingAdapter("loadImage")
-fun loadImage(view: ImageView, imageUrl :String? ) {
-    Picasso.get().load(imageUrl).into(view)
-}
-
 /**
  * Main fragment for this app. Implements all camera operations including:
  * - Viewfinder
@@ -126,7 +121,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
 
     /** Declare worker thread at the class level so it can be reused after config changes */
-    private val analyzerThread = HandlerThread("QRCodeAnalyzer").apply { start() }
+    private val analyzerThread = HandlerThread("ImageBarCodeAnalyzer").apply { start() }
 
     /** Internal reference of the [DisplayManager] */
     private lateinit var displayManager: DisplayManager
@@ -195,16 +190,12 @@ class CameraFragment : Fragment(), (String) -> Unit {
         viewModel._productList.observe(this, Observer { products ->
             Timber.i("add new Product in observer is here $products")
             cameraRecyclerAdapter.swapDataSet(products)
-
             val product: ProductModel? = products.getOrNull(0)
             // show the latest image in quick view on top of the camera fragment
             // image load in other place with custom attribute and custom binding adapter
-
             Timber.i("quick view $product")
             binding.quickViewProduct = product
             binding.invalidateAll()
-
-
             binding.ConsGred.setOnClickListener { v: View? ->
                 val openURL = Intent(Intent.ACTION_VIEW)
                 openURL.data = Uri.parse(product?.url)
@@ -212,8 +203,6 @@ class CameraFragment : Fragment(), (String) -> Unit {
             }
 
         })
-
-
 
         appContext = this.context!!
 
@@ -223,8 +212,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
             CameraFragmentRecyclerViewAdapter(
                 context,
                 generateFakeValues(),
-                this,
-                binding
+                this
             )
         recyclerView.adapter = cameraRecyclerAdapter
 
@@ -393,7 +381,7 @@ class CameraFragment : Fragment(), (String) -> Unit {
 
 
         imageAnalyzer = ImageAnalysis(analyzerConfig).apply {
-            analyzer =  QrCodeAnalyzer( { qrCodes ->
+            analyzer =  ImageBarCodeAnalyzer( { qrCodes ->
                 qrCodes.forEach {
                                         Log.d("MainActivity", "QR Code detected: ${it.rawValue}.")
 //                    showToast("QR Code detected: ${it.rawValue}.")

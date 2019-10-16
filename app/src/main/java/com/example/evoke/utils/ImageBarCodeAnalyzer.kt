@@ -17,7 +17,7 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata
 const val INTERVAL = 20
 
 
-class QrCodeAnalyzer(
+class ImageBarCodeAnalyzer(
     private val onQrCodesDetected: (qrCodes: List<FirebaseVisionBarcode>) -> Unit,
     private val onImageDetected: (name: String) -> Unit,
     val context: Context
@@ -34,7 +34,7 @@ class QrCodeAnalyzer(
         val rotation = rotationDegreesToFirebaseRotation(rotationDegrees)
         val visionImage = FirebaseVisionImage.fromMediaImage(image.image!!, rotation)
 
-        // each ten times call this function
+        // each INTERVAL times call this function
         // so we do not over load the server with new images
         // this values can increased from server side
         // so the performance match the server balance
@@ -51,7 +51,7 @@ class QrCodeAnalyzer(
 
             }
             .addOnFailureListener {
-                Log.e("QrCodeAnalyzer", "something went wrong", it)
+                Log.e("ImageBarCodeAnalyzer", "something went wrong", it)
             }
 
     }
@@ -73,6 +73,8 @@ class QrCodeAnalyzer(
     }
 
     companion object {
-        var gotoImage = INTERVAL
+        // send the first image instantly, but for other image wait 20 units
+        // 20 unit define in INTERVAL constant value
+        var gotoImage = 0
     }
 }
