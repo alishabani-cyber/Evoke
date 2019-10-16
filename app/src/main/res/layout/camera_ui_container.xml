@@ -47,6 +47,7 @@
         android:layout_marginBottom="140dp"
         android:background="@drawable/txt2"
         android:contentDescription="@string/capture_button_alt"
+        android:visibility="invisible"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
