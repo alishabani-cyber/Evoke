@@ -9,4 +9,6 @@
 
     <color name="preview_c">#2F009688</color>
     <color name="preview_start">#6432B4</color>
+    
+    <color name="yellow_start">#FFFF00</color>
 </resources>

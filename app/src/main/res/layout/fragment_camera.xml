@@ -42,23 +42,20 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_result"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:background="@drawable/txt"
-            android:paddingHorizontal="8dp"
             android:paddingBottom="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:listitem="@layout/list_items"
 
 
-            />
+            tools:listitem="@layout/list_items" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/Cons_gred"
@@ -71,109 +68,60 @@
             app:layout_constraintHorizontal_bias="0.924"
             app:layout_constraintStart_toStartOf="@+id/view_finder"
             app:layout_constraintTop_toTopOf="@+id/view_finder"
-            app:layout_constraintVertical_bias="0.039">
+            app:layout_constraintVertical_bias="0.0">
 
-
-            <TextView
-                android:id="@+id/starts"
-                android:layout_width="51dp"
-                android:layout_height="18dp"
-                android:layout_marginTop="6dp"
-                android:text="@{Integer.toString(quickViewProduct.start)}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.144"
-                app:layout_constraintStart_toEndOf="@+id/preview_image_view"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.129"
-                tools:text="2" />
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="17dp"
-                android:background="@drawable/ic_star_black_24dp"
-                app:layout_constraintBottom_toBottomOf="@+id/starts"
-                app:layout_constraintEnd_toEndOf="@+id/starts"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/starts"
-                app:layout_constraintTop_toTopOf="@+id/starts"
-                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/price"
-                android:layout_width="51dp"
+                android:layout_width="0dp"
                 android:layout_height="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@{Integer.toString(quickViewProduct.price)}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.144"
-                app:layout_constraintStart_toEndOf="@+id/preview_image_view"
-                app:layout_constraintTop_toBottomOf="@+id/starts"
-                app:layout_constraintVertical_bias="0.061"
+                app:layout_constraintBottom_toTopOf="@+id/starts"
+                app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
+                app:layout_constraintStart_toStartOf="@+id/preview_image_view"
+                app:layout_constraintTop_toBottomOf="@+id/preview_image_view"
                 tools:text="price" />
 
             <ImageView
                 android:id="@+id/preview_image_view"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/quick_view_image_desc"
+                android:scaleType="fitCenter"
                 android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:loadImage="@{quickViewProduct.image}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.117"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.128" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/preview_text_view_upper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:background="@drawable/txt"
                 android:gravity="center"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
                 android:text="@{quickViewProduct.title}"
+                android:textAlignment="center"
                 android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/preview_image_view"
-                app:layout_constraintTop_toBottomOf="@+id/preview_image_view"
                 tools:text="this is a mad test" />
 
-            <TextView
-                android:id="@+id/preview_text_view_mid"
+            <RatingBar
+                android:id="@+id/starts"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:theme="@style/RatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/txt"
-                android:gravity="center"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:text="this is a mad test"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.213"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/preview_text_view_upper"
-                app:layout_constraintVertical_bias="0.206" />
-
-            <TextView
-                android:id="@+id/preview_text_view_downer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/txt"
-                android:gravity="center"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:text="this is a mad test"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.213"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/preview_text_view_mid"
-                app:layout_constraintVertical_bias="0.466" />
+                android:layout_marginBottom="8dp"
+                android:numStars="@{quickViewProduct.start}"
+                app:layout_constraintBottom_toTopOf="@+id/preview_text_view_upper"
+                app:layout_constraintEnd_toEndOf="@+id/preview_image_view"
+                app:layout_constraintHorizontal_bias="0.25"
+                app:layout_constraintStart_toStartOf="@+id/preview_image_view" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

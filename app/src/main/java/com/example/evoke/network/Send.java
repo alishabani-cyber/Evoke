@@ -35,7 +35,7 @@ public class Send {
                         guessName[0] = object.getString("one");
                         String g = object.getString("one");
 
-                        cameraRecyclerAdapter.addToDataSet(g);
+//                        cameraRecyclerAdapter.addToDataSet(g);
                         Toast.makeText(context, object.toString(), Toast.LENGTH_SHORT).show();
 
 

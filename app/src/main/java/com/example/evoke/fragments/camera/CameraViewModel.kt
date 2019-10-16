@@ -1,6 +1,8 @@
 package com.example.evoke.fragments.camera
 
 import android.content.Context
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.volley.Request
@@ -9,6 +11,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.example.evoke.models.ProductModel
 import com.example.evoke.network.VolleyRequestSingleton
 import com.google.gson.Gson
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 

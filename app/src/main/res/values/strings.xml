@@ -13,4 +13,5 @@
     <string name="delete_dialog">Delete current photo?</string>
     <string name="delete_title">Confirm</string>
     <string name="item_num1">item_num1</string>
+    <string name="quick_view_image_desc">Last Product Image</string>
 </resources>

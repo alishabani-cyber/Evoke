@@ -35,7 +35,6 @@ class CameraFragmentRecyclerViewAdapter(
         binding.quickViewProduct = quickViewProduct
     }
 
-    var stop: Int = 1;
     override fun getItemCount(): Int {
         return values.size
     }
@@ -61,15 +60,6 @@ class CameraFragmentRecyclerViewAdapter(
     }
 
 
-    fun addToDataSet(newValue: String?) {
-        if (newValue != null && !customContains(newValue)) {
-
-            findInAPI(newValue)
-            return
-        }
-    }
-
-
     class ViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         var textView: TextView? = null
         var imageView: ImageView
@@ -91,71 +81,5 @@ class CameraFragmentRecyclerViewAdapter(
                 listener(item.url)
             }
         }
-
-    }
-
-    private fun customContains(newValue: String): Boolean {
-        for (i in values) {
-            if (newValue == i.item) {
-                return true
-            }
-        }
-        return false
-    }
-
-
-    private fun findInAPI(rawValue: String?) {
-
-        if (stop == 1) {
-            stop = -1
-
-            val url: String = "http://94.182.189.118/api/product/$rawValue"
-            val request = JsonObjectRequest(
-                Request.Method.GET, url, null,
-                Response.Listener<JSONObject> { response ->
-                    var gson = Gson()
-
-                    var testModel = gson.fromJson(response.toString(), ProductModel::class.java)
-
-//                not add if already in set
-                    if (!customContains(testModel.item)) {
-                        this.values.add(0, testModel)
-                        notifyDataSetChanged()
-                        binding.invalidateAll()
-                        showpreivew(testModel)
-
-                    }
-                    stop = 1
-
-
-                },
-                Response.ErrorListener { error ->
-                    //                Log.d(TAG, error.message)
-                    stop = 1
-                })
-
-
-            VolleyService.requestQueue.add(request)
-            VolleyService.requestQueue.start()
-
-        }
-    }
-
-    private fun showpreivew(product: ProductModel) {
-//        CameraFragment.cha(product)
-        binding.quickViewProduct = product
-        binding.invalidateAll()
-
-        Picasso.get().load(product.image).into(binding.previewImageView)
-
-        binding.ConsGred.setOnClickListener { v: View? ->
-            val openURL = Intent(Intent.ACTION_VIEW)
-            openURL.data = Uri.parse(product.url)
-            appContext.startActivity(openURL)
-        }
-    }
-
-    companion object {
-        private const val TAG = "Recycler Adapter"
     }
 }

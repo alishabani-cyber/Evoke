@@ -38,6 +38,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.camera.core.CameraX
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageAnalysisConfig
@@ -50,6 +51,7 @@ import androidx.camera.core.PreviewConfig
 import androidx.navigation.Navigation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.setPadding
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -68,6 +70,7 @@ import com.example.evoke.models.ProductModel
 import com.example.evoke.network.ANIMATION_FAST_MILLIS
 import com.example.evoke.network.ANIMATION_SLOW_MILLIS
 import com.example.evoke.utils.*
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -76,6 +79,11 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
+@BindingAdapter("loadImage")
+fun loadImage(view: ImageView, imageUrl :String? ) {
+    Picasso.get().load(imageUrl).into(view)
+}
 
 /**
  * Main fragment for this app. Implements all camera operations including:
@@ -179,16 +187,33 @@ class CameraFragment : Fragment(), (String) -> Unit {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 //        val binding = inflater.inflate(R.layout.fragment_camera, container,false)
+        val binding = DataBindingUtil.inflate<FragmentCameraBinding>(
+            inflater, R.layout.fragment_camera, container, false)
 
         viewModel = ViewModelProviders.of(this).get(CameraViewModel::class.java)
 
         viewModel._productList.observe(this, Observer { products ->
             Timber.i("add new Product in observer is here $products")
             cameraRecyclerAdapter.swapDataSet(products)
+
+            val product: ProductModel? = products.getOrNull(0)
+            // show the latest image in quick view on top of the camera fragment
+            // image load in other place with custom attribute and custom binding adapter
+
+            Timber.i("quick view $product")
+            binding.quickViewProduct = product
+            binding.invalidateAll()
+
+
+            binding.ConsGred.setOnClickListener { v: View? ->
+                val openURL = Intent(Intent.ACTION_VIEW)
+                openURL.data = Uri.parse(product?.url)
+                appContext.startActivity(openURL)
+            }
+
         })
 
-        val binding = DataBindingUtil.inflate<FragmentCameraBinding>(
-            inflater, R.layout.fragment_camera, container, false)
+
 
         appContext = this.context!!
 
@@ -213,6 +238,9 @@ class CameraFragment : Fragment(), (String) -> Unit {
         val values = ArrayList<ProductModel>()
         return values
     }
+
+
+
 
     private fun setGalleryThumbnail(file: File) {
         // Reference of the view that holds the gallery thumbnail
