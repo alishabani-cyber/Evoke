@@ -11,4 +11,11 @@
     <color name="preview_start">#6432B4</color>
     
     <color name="yellow_start">#FFFF00</color>
+
+    <color name="gredient_start">#18BCFF</color>
+    <color name="gredient_end">#3F51B5</color>
+
+    <color name="gredientq_start">#4D18BCFF</color>
+    <color name="gredientq_end">#4D3F51B5</color>
+
 </resources>

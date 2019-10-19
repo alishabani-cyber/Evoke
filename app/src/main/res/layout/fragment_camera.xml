@@ -30,7 +30,8 @@
         android:id="@+id/camera_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black">
+        android:background="@drawable/txt"
+        >
 
 
         <TextureView
@@ -46,8 +47,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_result"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@drawable/txt"
+            android:layout_height="100dp"
+            android:background="@drawable/gredient"
             android:paddingBottom="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -59,7 +60,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@drawable/txt"
+            android:background="@drawable/gredientq"
             android:gravity="center|top"
             android:orientation="vertical"
             android:padding="16dp"
@@ -137,6 +138,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@drawable/txt"
             app:layout_constraintGuide_percent="0.5" />
 
 
