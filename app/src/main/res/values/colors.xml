@@ -18,4 +18,6 @@
     <color name="gredientq_start">#4D18BCFF</color>
     <color name="gredientq_end">#4D3F51B5</color>
 
+    <color name="black">#000</color>
+
 </resources>
